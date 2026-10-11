@@ -4,6 +4,7 @@ import { API_ORIGIN, API_URL } from '@/lib/env'
 import { isRecord, pick } from '@/lib/pick'
 import { tokenStorage } from '@/services/tokenStorage'
 import { endpoints } from '@/services/endpoints'
+import { useAuthStore } from '@/store/authStore'
 
 type RetryConfig = InternalAxiosRequestConfig & { _retry?: boolean }
 
@@ -53,7 +54,7 @@ api.interceptors.response.use(
 
     const newAccessToken = await refreshAccessToken()
     if (!newAccessToken) {
-      tokenStorage.clear()
+      useAuthStore.getState().clearSession()
       if (!window.location.pathname.startsWith('/login')) {
         window.location.assign('/login')
       }

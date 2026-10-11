@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware'
 
 import { tokenStorage } from '@/services/tokenStorage'
 import type { User } from '@/types'
+import { tokenValido } from '@/utils/auth'
 
 interface AuthState {
   user: User | null
@@ -33,9 +34,24 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
+      merge: (persistedState, currentState) => {
+        const persisted = persistedState as Partial<AuthState>
+
+        if (!tokenValido(persisted.accessToken ?? null)) {
+          tokenStorage.clear()
+          return currentState
+        }
+
+        return {
+          ...currentState,
+          ...persisted,
+          isAuthenticated: true,
+        }
+      },
       onRehydrateStorage: () => (state) => {
-        if (state?.accessToken) {
-          tokenStorage.set(state.accessToken, state.refreshToken)
+        const accessToken = state?.accessToken ?? null
+        if (accessToken && tokenValido(accessToken)) {
+          tokenStorage.set(accessToken, state?.refreshToken)
         }
       },
     },

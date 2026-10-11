@@ -1,0 +1,4 @@
+
+[mcp_servers.graphify]
+command = "graphify"
+args = ["\\\\?\\W:\\projetos\\quebra galho", "--mcp"]
