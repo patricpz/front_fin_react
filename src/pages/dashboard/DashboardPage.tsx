@@ -15,6 +15,13 @@ import { formatCurrency } from '@/utils/formatCurrency'
 export function DashboardPage() {
   const { data, isLoading } = useDashboard()
   const currentMonth = format(new Date(), "MMMM 'de' yyyy", { locale: ptBR })
+  console.log(data, 'data')
+
+  let expense = data?.monthlyExpenses ?? 0
+  let income = data?.monthlyIncome ?? 0
+
+  const saldoFin = income - expense
+
 
   return (
     <div className="mx-auto max-w-lg">
@@ -39,7 +46,7 @@ export function DashboardPage() {
                   <div>
                     <p className="text-sm opacity-90">Saldo total</p>
                     <p className="mt-1 text-3xl font-bold tracking-tight">
-                      {formatCurrency(data.totalBalance)}
+                      {formatCurrency(saldoFin)}
                     </p>
                   </div>
                   <div className="rounded-xl bg-white/15 p-2.5">
