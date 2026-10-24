@@ -8,6 +8,7 @@ import {
 import { Link, useLocation } from 'react-router-dom'
 
 import { ROUTES } from '@/constants'
+import { useLayout } from '@/hooks/useLayout'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -18,7 +19,12 @@ const navItems = [
 ]
 
 export function BottomNav() {
+  const { isWeb } = useLayout()
   const location = useLocation()
+
+  if (isWeb) {
+    return null
+  }
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-50 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
@@ -44,7 +50,7 @@ export function BottomNav() {
 
         <Link
           to={ROUTES.TRANSACTION_NEW}
-          className="-mt-6 mx-auto flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 transition-transform hover:scale-105"
+          className="-mt-6 mx-auto flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 transition-transform hover:scale-105 active:scale-95"
           aria-label="Nova transação"
         >
           <Plus className="size-7" />

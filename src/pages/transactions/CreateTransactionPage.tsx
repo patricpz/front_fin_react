@@ -17,9 +17,9 @@ export function CreateTransactionPage() {
   }
 
   return (
-    <div className="mx-auto max-w-lg">
-      <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-        <div className="flex items-center gap-3 px-4 py-4">
+    <div className="mx-auto w-full max-w-lg md:max-w-2xl">
+      <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:static md:border-b-0 md:bg-transparent md:mb-6">
+        <div className="flex items-center gap-3 px-4 py-4 md:px-0 md:py-0">
           <Link
             to={ROUTES.TRANSACTIONS}
             className="flex size-10 items-center justify-center rounded-xl bg-secondary text-muted-foreground transition-colors hover:text-foreground"
@@ -28,16 +28,16 @@ export function CreateTransactionPage() {
             <ArrowLeft className="size-5" />
           </Link>
           <div>
-            <h1 className="text-xl font-bold tracking-tight">Nova transação</h1>
+            <h1 className="text-xl font-bold tracking-tight md:text-2xl">Nova transação</h1>
             <p className="text-sm text-muted-foreground">Cadastre receita ou despesa</p>
           </div>
         </div>
       </header>
 
-      <main className="px-4 py-4">
+      <main className="px-4 py-4 md:px-0 md:py-0">
         <Card className="border-0 shadow-md">
           <CardHeader>
-            <CardTitle className="text-base">Detalhes do lançamento</CardTitle>
+            <CardTitle className="text-base md:text-lg">Detalhes do lançamento</CardTitle>
           </CardHeader>
           <CardContent>
             <TransactionForm

@@ -19,34 +19,50 @@ export function ProfilePage() {
   }
 
   return (
-    <div className="mx-auto max-w-lg">
-      <Header title="Perfil" />
-      <main className="space-y-4 px-4 py-4">
+    <div className="mx-auto w-full max-w-lg md:max-w-2xl">
+      <Header title="Perfil" subtitle="Gerencie suas informações pessoais" />
+      <main className="space-y-4 px-4 py-4 md:px-0 md:py-0">
         <Card className="border-0 shadow-md">
-          <CardContent className="space-y-3 p-5">
-            <div>
-              <p className="text-xs text-muted-foreground">Nome</p>
-              <p className="font-medium">{user?.name || '—'}</p>
+          <CardContent className="space-y-4 p-5 md:p-6">
+            <div className="flex items-center gap-4 border-b pb-4">
+              <div className="flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-xl font-bold text-primary">
+                {user?.name?.[0]?.toUpperCase() ?? 'U'}
+              </div>
+              <div>
+                <h2 className="text-lg font-bold">{user?.name || 'Usuário'}</h2>
+                <p className="text-sm text-muted-foreground">{user?.email || '—'}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-xs text-muted-foreground">E-mail</p>
-              <p className="font-medium">{user?.email || '—'}</p>
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">Moeda</p>
-              <p className="font-medium">{user?.currency || 'BRL'}</p>
+
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="rounded-xl bg-muted/40 p-3">
+                <p className="text-xs text-muted-foreground">Nome completo</p>
+                <p className="font-medium text-sm mt-0.5">{user?.name || '—'}</p>
+              </div>
+              <div className="rounded-xl bg-muted/40 p-3">
+                <p className="text-xs text-muted-foreground">E-mail</p>
+                <p className="font-medium text-sm mt-0.5">{user?.email || '—'}</p>
+              </div>
+              <div className="rounded-xl bg-muted/40 p-3">
+                <p className="text-xs text-muted-foreground">Moeda padrão</p>
+                <p className="font-medium text-sm mt-0.5">{user?.currency || 'BRL'}</p>
+              </div>
+              <div className="rounded-xl bg-muted/40 p-3">
+                <p className="text-xs text-muted-foreground">Status da conta</p>
+                <p className="font-medium text-sm text-emerald-600 mt-0.5">Ativa</p>
+              </div>
             </div>
           </CardContent>
         </Card>
 
         <Button
           variant="destructive"
-          className="w-full"
+          className="w-full cursor-pointer"
           onClick={handleLogout}
           disabled={logout.isPending}
         >
-          <LogOut className="size-4" />
-          {logout.isPending ? 'Saindo...' : 'Sair'}
+          <LogOut className="size-4 mr-2" />
+          {logout.isPending ? 'Saindo...' : 'Sair da conta'}
         </Button>
       </main>
     </div>

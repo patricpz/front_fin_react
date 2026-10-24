@@ -113,70 +113,81 @@ export function AccountsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-lg">
-      <Header title="Contas" subtitle="Gerencie suas contas financeiras" />
+    <div className="mx-auto w-full max-w-lg md:max-w-none">
+      <Header
+        title="Contas"
+        subtitle="Gerencie suas contas financeiras"
+        action={
+          <Button className="hidden sm:inline-flex" onClick={handleOpenCreate}>
+            <Plus className="mr-2 size-4" />
+            Nova conta
+          </Button>
+        }
+      />
 
-      <main className="space-y-4 px-4 py-4">
-        <Button className="w-full" onClick={handleOpenCreate}>
+      <main className="space-y-4 px-4 py-4 md:space-y-6 md:px-0 md:py-0">
+        <Button className="w-full sm:hidden" onClick={handleOpenCreate}>
           <Plus className="mr-2 size-4" />
           Nova conta
         </Button>
 
         <Card className="border-0 shadow-md">
-          <CardContent className="flex items-start justify-between p-4">
+          <CardContent className="flex items-start justify-between p-4 md:p-6">
             <div className="space-y-1">
-              <p className="text-xs font-medium text-muted-foreground">Saldo total</p>
-              <p className="text-lg font-bold tracking-tight">{formatCurrency(totalBalance)}</p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs font-medium text-muted-foreground md:text-sm">Saldo total</p>
+              <p className="text-2xl font-bold tracking-tight md:text-3xl">{formatCurrency(totalBalance)}</p>
+              <p className="text-xs text-muted-foreground md:text-sm">
                 {activeAccounts.length} {activeAccounts.length === 1 ? 'conta ativa' : 'contas ativas'}
               </p>
             </div>
-            <div className="rounded-xl bg-primary/10 p-2.5 text-primary">
-              <CircleDollarSign className="size-5" />
+            <div className="rounded-xl bg-primary/10 p-2.5 text-primary md:p-3">
+              <CircleDollarSign className="size-6 md:size-8" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-md">
-          <CardContent className="p-4">
-            <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-base font-semibold">Suas contas</h2>
-              <Badge variant="secondary">{activeAccounts.length}</Badge>
-            </div>
+        <div>
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="text-base font-semibold md:text-lg">Suas contas</h2>
+            <Badge variant="secondary">{activeAccounts.length}</Badge>
+          </div>
 
-            {isLoading ? (
-              <div className="space-y-3">
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <Skeleton key={i} className="h-20 w-full" />
-                ))}
-              </div>
-            ) : activeAccounts.length === 0 ? (
-              <p className="py-10 text-center text-sm text-muted-foreground">
+          {isLoading ? (
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <Skeleton key={i} className="h-24 w-full rounded-2xl" />
+              ))}
+            </div>
+          ) : activeAccounts.length === 0 ? (
+            <Card className="border-0 shadow-md">
+              <CardContent className="p-8 text-center text-sm text-muted-foreground">
                 Nenhuma conta encontrada.
-              </p>
-            ) : (
-              <div className="divide-y">
-                {activeAccounts.map((account) => {
-                  const Icon = accountTypeIcons[account.type]
-                  return (
-                    <div key={account.id} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {activeAccounts.map((account) => {
+                const Icon = accountTypeIcons[account.type]
+                return (
+                  <Card key={account.id} className="border-0 shadow-sm transition-shadow hover:shadow-md">
+                    <CardContent className="flex items-center gap-3 p-4">
                       <div className="rounded-xl bg-secondary p-2.5 text-muted-foreground">
                         <Icon className="size-5" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
-                          <p className="truncate text-sm font-medium">{account.name}</p>
+                          <p className="truncate text-sm font-semibold">{account.name}</p>
                           <Badge variant={accountTypeBadgeVariant[account.type]}>
                             {accountTypeLabels[account.type]}
                           </Badge>
                         </div>
-                        <p className="text-lg font-bold">{formatCurrency(account.balance)}</p>
+                        <p className="mt-1 text-lg font-bold">{formatCurrency(account.balance)}</p>
                       </div>
                       <div className="flex gap-1">
                         <button
                           type="button"
                           onClick={() => handleOpenEdit(account)}
-                          className="flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                          className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer"
                           aria-label={`Editar ${account.name}`}
                         >
                           <Pencil className="size-4" />
@@ -184,19 +195,19 @@ export function AccountsPage() {
                         <button
                           type="button"
                           onClick={() => setDeleteTarget(account)}
-                          className="flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                          className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive cursor-pointer"
                           aria-label={`Excluir ${account.name}`}
                         >
                           <Trash2 className="size-4" />
                         </button>
                       </div>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                    </CardContent>
+                  </Card>
+                )
+              })}
+            </div>
+          )}
+        </div>
       </main>
 
       {showForm && (
