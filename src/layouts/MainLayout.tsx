@@ -1,12 +1,16 @@
-import { Outlet } from 'react-router-dom'
-
-import { BottomNav } from '@/components/layout/BottomNav'
+import { useLayout } from '@/hooks/useLayout'
+import { MobileLayout } from '@/layouts/MobileLayout'
+import { WebLayout } from '@/layouts/WebLayout'
 
 export function MainLayout() {
-  return (
-    <div className="min-h-dvh bg-background pb-24">
-      <Outlet />
-      <BottomNav />
-    </div>
-  )
+  const { activeLayout } = useLayout()
+
+  if (activeLayout === 'web') {
+    return <WebLayout />
+  }
+
+  return <MobileLayout />
 }
+
+export { MobileLayout } from '@/layouts/MobileLayout'
+export { WebLayout } from '@/layouts/WebLayout'
