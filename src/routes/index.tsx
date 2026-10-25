@@ -39,7 +39,7 @@ export function AppRoutes() {
             />
           }
         />
-        <Route
+        {/* <Route
           path={ROUTES.CATEGORIES}
           element={
             <PlaceholderPage
@@ -47,7 +47,7 @@ export function AppRoutes() {
               description="Organize receitas e despesas por categorias."
             />
           }
-        />
+        /> */}
         <Route
           path={ROUTES.BUDGET}
           element={
@@ -66,7 +66,7 @@ export function AppRoutes() {
             />
           }
         />
-        <Route
+        {/* <Route
           path={ROUTES.REPORTS}
           element={
             <PlaceholderPage
@@ -74,7 +74,7 @@ export function AppRoutes() {
               description="Análises detalhadas de receitas, despesas e evolução patrimonial."
             />
           }
-        />
+        /> */}
         <Route path={ROUTES.PROFILE} element={<ProfilePage />} />
       </Route>
 
