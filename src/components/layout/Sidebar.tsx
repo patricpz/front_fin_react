@@ -1,12 +1,12 @@
 import {
   ArrowLeftRight,
-  BarChart3,
+  // BarChart3,
   CreditCard,
   LayoutDashboard,
   LogOut,
   PiggyBank,
   Plus,
-  Tag,
+  // Tag,
   Target,
   User,
   Wallet,
@@ -27,10 +27,10 @@ const mainNavItems = [
 ]
 
 const managementNavItems = [
-  { to: ROUTES.CATEGORIES, label: 'Categorias', icon: Tag },
+  // { to: ROUTES.CATEGORIES, label: 'Categorias', icon: Tag },
   { to: ROUTES.BUDGET, label: 'Orçamento', icon: PiggyBank },
   { to: ROUTES.GOALS, label: 'Metas', icon: Target },
-  { to: ROUTES.REPORTS, label: 'Relatórios', icon: BarChart3 },
+  // { to: ROUTES.REPORTS, label: 'Relatórios', icon: BarChart3 },
 ]
 
 interface SidebarProps {
