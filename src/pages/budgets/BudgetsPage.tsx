@@ -1,5 +1,8 @@
 import { useState } from 'react'
-import { useBudgets, useCreateBudget, useUpdateBudget, useDeleteBudget, useBudgetProgress } from '@/hooks/useBudgets'
+import { useBudgets, useCreateBudget, useUpdateBudget, useDeleteBudget } from '@/hooks/useBudgets'
+import { useQueries } from '@tanstack/react-query'
+import { queryKeys } from '@/lib/queryKeys'
+import { fetchBudgetProgress } from '@/services/financeApi'
 import { useCategories } from '@/hooks/useCategories'
 import { formatBRL } from '@/lib/money'
 import { Header } from '@/components/layout/Header'
@@ -94,9 +97,14 @@ export function BudgetsPage() {
 
   const expenseCategories = categories.filter(c => c.type === 'despesa')
 
-  // Fetch progress for each budget at top level to avoid hook rules violation
-  const budgetIds = budgets.map(b => b.id)
-  const budgetProgressQueries = budgetIds.map(id => useBudgetProgress(id))
+  // Use useQueries for parallel queries - avoids hook rules violation
+  const budgetProgressQueries = useQueries({
+    queries: budgets.map(budget => ({
+      queryKey: queryKeys.budgetProgress(budget.id),
+      queryFn: () => fetchBudgetProgress(budget.id),
+      enabled: Boolean(budget.id),
+    })),
+  })
 
   const budgetsWithProgress = budgets.map((budget, index) => ({
     ...budget,
