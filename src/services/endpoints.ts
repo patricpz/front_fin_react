@@ -63,4 +63,20 @@ export const endpoints = {
     balanceEvolution: '/reports/balance-evolution',
     budgetVsActual: '/reports/budget-vs-actual',
   },
+  notifications: {
+    list: '/notifications',
+    markRead: (id: string) => `/notifications/${id}/read`,
+    readAll: '/notifications/read-all',
+    feedback: (id: string) => `/notifications/${id}/feedback`,
+    preferences: '/notification-preferences',
+    push: {
+      publicKey: '/push/public-key',
+      subscriptions: '/push/subscriptions',
+    },
+  },
+  expenses: {
+    installments: '/expenses/installments',
+    installmentsById: (id: string) => `/expenses/${id}/installments`,
+    pay: (id: string) => `/expenses/${id}/installments/pay`,
+  },
 } as const

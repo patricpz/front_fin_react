@@ -5,6 +5,9 @@ export type CategoryType = 'receita' | 'despesa'
 export type RecurrenceFrequency = 'diaria' | 'semanal' | 'mensal' | 'anual'
 export type GoalStatus = 'em_andamento' | 'concluida' | 'cancelada'
 export type GoalContributionType = 'aporte' | 'retirada'
+export type NotificationType = 'overspending' | 'spending_spike' | 'installment_due' | 'tip' | 'summary'
+export type NotificationStatus = 'unread' | 'read' | 'dismissed'
+export type FeedbackAction = 'opened' | 'dismissed' | 'helpful' | 'not_helpful' | 'executed'
 
 export interface User {
   id: string
@@ -202,6 +205,49 @@ export interface PaginatedResponse<T> {
 export interface ApiError {
   detail: string
   code: string
+}
+
+export interface NotificationItem {
+  id: string
+  type: NotificationType
+  title: string
+  body: string
+  status: NotificationStatus
+  created_at: string
+  payload: Record<string, unknown>
+}
+
+export interface NotificationPage {
+  items: NotificationItem[]
+  next_cursor: string | null
+  unread_count: number
+}
+
+export interface NotificationPreferences {
+  enabled_types: NotificationType[]
+  channel_in_app: boolean
+  channel_push: boolean
+  sensitivity: 'low' | 'medium' | 'high'
+  quiet_hours_start: string | null
+  quiet_hours_end: string | null
+  timezone: string
+  daily_limit: number
+}
+
+export interface Installment {
+  id: string
+  description: string
+  category: string | null
+  total_amount: number | string
+  installment_count: number
+  installment_amount: number | string
+  paid_installments: number
+  remaining_installments: number
+  progress_percent: number
+  paid_amount: number | string
+  remaining_amount: number | string
+  next_due_date: string | null
+  is_completed: boolean
 }
 
 export interface TransactionFilters {

@@ -9,6 +9,7 @@ import {
   mapAccount,
   mapBudget,
   mapBudgetProgress,
+  mapBalanceEvolution,
   mapCategory,
   mapCategoryTree,
   mapCategorySpendingReport,
@@ -20,11 +21,15 @@ import {
   mapTokens,
   mapTransaction,
   mapUser,
+  mapInstallment,
+  mapNotificationPage,
+  mapNotificationPreferences,
 } from '@/services/mappers'
 import { tokenStorage } from '@/services/tokenStorage'
 import type {
   Account,
   AuthTokens,
+  BalanceEvolution,
   Budget,
   BudgetProgress,
   BudgetVsActualItem,
@@ -33,7 +38,10 @@ import type {
   Goal,
   GoalContribution,
   GoalProgress,
+  Installment,
   MonthlySummary,
+  NotificationPage,
+  NotificationPreferences,
   Recurrence,
   Transaction,
   TransactionFilters,
@@ -542,14 +550,75 @@ export async function fetchCategorySpending(month: number, year: number): Promis
   return mapCategorySpendingReport(data)
 }
 
-export async function fetchBalanceEvolution(month: number, year: number, accountId?: string): Promise<MonthlySummary> {
+export async function fetchBalanceEvolution(month: number, year: number, accountId?: string): Promise<BalanceEvolution> {
   const { data } = await api.get(endpoints.reports.balanceEvolution, {
     params: { mes: month, ano: year, month, year, conta_id: accountId, account_id: accountId },
   })
-  return mapMonthlySummary(data)
+  return mapBalanceEvolution(data)
 }
 
 export async function fetchBudgetVsActual(month: number, year: number): Promise<BudgetVsActualItem[]> {
   const { data } = await api.get(endpoints.reports.budgetVsActual, { params: { mes: month, ano: year, month, year } })
   return unwrapList(data)
+}
+
+// Notificações
+
+export async function fetchNotifications(params: { cursor?: string | null; limit?: number; status?: string } = {}): Promise<NotificationPage> {
+  const { data } = await api.get(endpoints.notifications.list, { params })
+  return mapNotificationPage(data)
+}
+
+export async function markNotificationRead(id: string): Promise<void> {
+  await api.patch(endpoints.notifications.markRead(id))
+}
+
+export async function readAllNotifications(): Promise<void> {
+  await api.post(endpoints.notifications.readAll)
+}
+
+export async function sendNotificationFeedback(id: string, action: string): Promise<void> {
+  await api.post(endpoints.notifications.feedback(id), { action })
+}
+
+export async function fetchNotificationPreferences(): Promise<NotificationPreferences> {
+  const { data } = await api.get(endpoints.notifications.preferences)
+  return mapNotificationPreferences(data)
+}
+
+export async function updateNotificationPreferences(payload: NotificationPreferences): Promise<NotificationPreferences> {
+  const { data } = await api.put(endpoints.notifications.preferences, payload)
+  return mapNotificationPreferences(data)
+}
+
+// Push
+
+export async function fetchPushPublicKey(): Promise<string> {
+  const { data } = await api.get(endpoints.notifications.push.publicKey)
+  return String(data.public_key ?? data.publicKey ?? '')
+}
+
+export async function subscribePush(sub: PushSubscriptionJSON): Promise<void> {
+  await api.post(endpoints.notifications.push.subscriptions, {
+    endpoint: sub.endpoint,
+    p256dh: sub.keys?.p256dh,
+    auth: sub.keys?.auth,
+    user_agent: navigator.userAgent,
+  })
+}
+
+export async function unsubscribePush(id: string): Promise<void> {
+  await api.delete(endpoints.notifications.push.subscriptions + `/${id}`)
+}
+
+// Parcelas
+
+export async function fetchInstallments(): Promise<Installment[]> {
+  const { data } = await api.get(endpoints.expenses.installments)
+  return unwrapList(data).map(mapInstallment)
+}
+
+export async function payInstallment(id: string): Promise<Installment> {
+  const { data } = await api.patch(endpoints.expenses.pay(id))
+  return mapInstallment(data)
 }

@@ -63,7 +63,9 @@ export function AccountsPage() {
   const [deleteTarget, setDeleteTarget] = useState<Account | null>(null)
 
   const activeAccounts = accounts.filter((a) => a.active)
+  console.log(activeAccounts, "activeAccounts")
   const totalBalance = activeAccounts.reduce((sum, a) => sum + a.balance, 0)
+  console.log(totalBalance, "totalBalance")
 
   function handleOpenCreate() {
     setEditingAccount(null)

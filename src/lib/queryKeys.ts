@@ -13,6 +13,9 @@ export const queryKeys = {
   budgetProgress: (id: string) => ['budgets', id, 'progress'] as const,
   goals: ['goals'] as const,
   goalProgress: (id: string) => ['goals', id, 'progress'] as const,
+  installments: {
+    list: () => ['installments'] as const,
+  },
   dashboard: ['dashboard', 'summary'] as const,
   reports: {
     monthly: (mes: number, ano: number) => ['reports', 'monthly', mes, ano] as const,

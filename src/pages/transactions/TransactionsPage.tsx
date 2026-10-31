@@ -38,6 +38,8 @@ export function TransactionsPage() {
     })
   }, [transactions, filter, search])
 
+  console.log(transactions)
+
   const monthTransactions = filterCurrentMonthTransactions(transactions)
   const totalIncome = monthTransactions
     .filter((t) => t.type === 'receita' && t.status === 'confirmado')

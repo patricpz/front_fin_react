@@ -1,9 +1,10 @@
-import { Bell, UserCircle2 } from 'lucide-react'
+import { UserCircle2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { LayoutSwitcher } from '@/components/layout/LayoutSwitcher'
 import { ROUTES } from '@/constants'
 import { useAuthStore } from '@/store/authStore'
+import { NotificationBell } from '@/features/notifications/NotificationBell'
 
 interface WebHeaderProps {
   title?: string
@@ -31,14 +32,7 @@ export function WebHeader({ title, subtitle }: WebHeaderProps) {
       <div className="flex items-center gap-3">
         <LayoutSwitcher />
 
-        <button
-          type="button"
-          className="flex size-9 items-center justify-center rounded-xl border bg-secondary/50 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer"
-          aria-label="Notificações"
-          title="Notificações"
-        >
-          <Bell className="size-4" />
-        </button>
+        <NotificationBell />
 
         <Link
           to={ROUTES.PROFILE}
