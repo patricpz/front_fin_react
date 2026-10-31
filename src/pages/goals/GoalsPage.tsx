@@ -1,5 +1,8 @@
 import { useState } from 'react'
-import { useGoals, useGoalProgress, useCreateGoal, useUpdateGoal, useDeleteGoal, useCreateGoalContribution, useGoalContributions } from '@/hooks/useGoals'
+import { useQueries } from '@tanstack/react-query'
+import { useGoals, useCreateGoal, useUpdateGoal, useDeleteGoal, useCreateGoalContribution, useGoalContributions } from '@/hooks/useGoals'
+import { fetchGoalProgress } from '@/services/financeApi'
+import { queryKeys } from '@/lib/queryKeys'
 import { formatBRL } from '@/lib/money'
 import { formatRelative, formatShortDate } from '@/lib/dates'
 import { Header } from '@/components/layout/Header'
@@ -93,6 +96,9 @@ export function GoalsPage() {
 
   const createContribution = useCreateGoalContribution()
 
+  // Fetch contributions for the selected goal (enabled when viewContributionsId is set)
+  const contributionsQuery = useGoalContributions(viewContributionsId ?? undefined)
+
   const handleContributionSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     createContribution.mutate({ goalId: contributionForm.goalId, payload: {
@@ -109,8 +115,14 @@ export function GoalsPage() {
     })
   }
 
-  // Fetch progress for all goals at top level to avoid hook rules violation
-  const goalProgressQueries = goals.map(goal => useGoalProgress(goal.id))
+  // Fetch progress for all goals using useQueries to avoid hook rules violation
+  const goalProgressQueries = useQueries({
+    queries: goals.map(goal => ({
+      queryKey: queryKeys.goalProgress(goal.id),
+      queryFn: () => fetchGoalProgress(goal.id),
+      enabled: Boolean(goal.id),
+    })),
+  })
 
   if (isLoading) {
     return (
@@ -278,32 +290,32 @@ export function GoalsPage() {
 
               {viewContributionsId && (
                 <>
-                  {(() => {
-                    const contribsQuery = useGoalContributions(viewContributionsId)
-                    const contribs = contribsQuery.data ?? []
-                    return contribs.length === 0 ? (
-                      <p className="text-sm text-muted-foreground text-center py-4">Nenhuma contribuição registrada</p>
-                    ) : (
-                      <ul className="divide-y divide-slate-100">
-                        {contribs.map(c => (
-                          <li key={c.id} className="py-3 flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <span className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                                c.type === 'aporte' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
-                              }`}>
-                                {c.type === 'aporte' ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
-                              </span>
-                              <div>
-                                <p className="font-medium">{formatBRL(c.amount)}</p>
-                                <p className="text-xs text-muted-foreground">{formatRelative(c.date)}</p>
-                              </div>
+                  {contributionsQuery.isLoading ? (
+                    <div className="flex items-center justify-center py-4">
+                      <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
+                    </div>
+                  ) : contributionsQuery.data?.length === 0 ? (
+                    <p className="text-sm text-muted-foreground text-center py-4">Nenhuma contribuição registrada</p>
+                  ) : (
+                    <ul className="divide-y divide-slate-100">
+                      {(contributionsQuery.data ?? []).map(c => (
+                        <li key={c.id} className="py-3 flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <span className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                              c.type === 'aporte' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
+                            }`}>
+                              {c.type === 'aporte' ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
+                            </span>
+                            <div>
+                              <p className="font-medium">{formatBRL(c.amount)}</p>
+                              <p className="text-xs text-muted-foreground">{formatRelative(c.date)}</p>
                             </div>
-                            {c.observation && <p className="text-sm text-muted-foreground">{c.observation}</p>}
-                          </li>
-                        ))}
-                      </ul>
-                    )
-                  })()}
+                          </div>
+                          {c.observation && <p className="text-sm text-muted-foreground">{c.observation}</p>}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </>
               )}
             </CardContent>
