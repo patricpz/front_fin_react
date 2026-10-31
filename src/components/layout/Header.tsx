@@ -1,9 +1,10 @@
-import { Bell, UserCircle2 } from 'lucide-react'
+import { UserCircle2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { ROUTES } from '@/constants'
 import { useLayout } from '@/hooks/useLayout'
 import { useAuthStore } from '@/store/authStore'
+import { NotificationBell } from '@/features/notifications/NotificationBell'
 
 interface HeaderProps {
   title: string
@@ -22,7 +23,17 @@ export function Header({ title, subtitle, action }: HeaderProps) {
           <h1 className="text-2xl font-bold tracking-tight text-foreground">{title}</h1>
           {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
         </div>
-        {action && <div>{action}</div>}
+        <div className="flex items-center gap-2">
+          {action}
+          <NotificationBell />
+          <Link
+            to={ROUTES.PROFILE}
+            className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors hover:bg-primary/20"
+            aria-label="Perfil"
+          >
+            <UserCircle2 className="size-5" />
+          </Link>
+        </div>
       </div>
     )
   }
@@ -37,13 +48,7 @@ export function Header({ title, subtitle, action }: HeaderProps) {
         </div>
         <div className="flex items-center gap-2">
           {action}
-          <button
-            type="button"
-            className="flex size-10 items-center justify-center rounded-xl bg-secondary text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
-            aria-label="Notificações"
-          >
-            <Bell className="size-5" />
-          </button>
+          <NotificationBell />
           <Link
             to={ROUTES.PROFILE}
             className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors hover:bg-primary/20"

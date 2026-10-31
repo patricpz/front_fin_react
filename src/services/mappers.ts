@@ -18,7 +18,13 @@ import type {
   GoalContributionType,
   GoalProgress,
   GoalStatus,
+  Installment,
   MonthlySummary,
+  NotificationItem,
+  NotificationPage,
+  NotificationPreferences,
+  NotificationType,
+  NotificationStatus,
   Recurrence,
   RecurrenceFrequency,
   Transaction,
@@ -303,4 +309,71 @@ export function unwrapList<T>(data: unknown): T[] {
     return data as T[]
   }
   return []
+}
+
+// Notificações
+
+export function mapNotification(raw: unknown): NotificationItem {
+  const data = asRecord(raw)
+  return {
+    id: String(pick(data, ['id'], '')),
+    type: String(pick(data, ['type', 'tipo'], 'tip')) as NotificationType,
+    title: String(pick(data, ['title', 'titulo'], '')),
+    body: String(pick(data, ['body', 'mensagem', 'descricao'], '')),
+    status: String(pick(data, ['status', 'estado'], 'unread')) as NotificationStatus,
+    created_at: String(pick(data, ['created_at', 'createdAt', 'criado_em', 'criadoEm', 'data'], '')),
+    payload: isRecord(pick(data, ['payload', 'dados', 'metadata'], {}))
+      ? pick(data, ['payload', 'dados', 'metadata'], {})
+      : {},
+  }
+}
+
+export function mapNotificationPage(raw: unknown): NotificationPage {
+  const data = asRecord(raw)
+  const itemsRaw = pick(data, ['items', 'data', 'resultados', 'results'], [])
+  return {
+    items: Array.isArray(itemsRaw) ? itemsRaw.map(mapNotification) : [],
+    next_cursor: pick(data, ['next_cursor', 'nextCursor', 'proximo_cursor'], null) as string | null,
+    unread_count: toNumber(pick(data, ['unread_count', 'unreadCount', 'nao_lidas'], 0)),
+  }
+}
+
+export function mapNotificationPreferences(raw: unknown): NotificationPreferences {
+  const data = asRecord(raw)
+  const rawEnabled = pick(data, ['enabled_types', 'enabledTypes', 'tipos_ativos'], [])
+  return {
+    enabled_types: Array.isArray(rawEnabled) ? rawEnabled.map(String) as NotificationType[] : [] as NotificationType[],
+    channel_in_app: Boolean(pick(data, ['channel_in_app', 'channelInApp', 'canal_in_app'], true)),
+    channel_push: Boolean(pick(data, ['channel_push', 'channelPush', 'canal_push'], true)),
+    sensitivity: String(pick(data, ['sensitivity', 'sensibilidade'], 'medium')) as 'low' | 'medium' | 'high',
+    quiet_hours_start: pick(data, ['quiet_hours_start', 'quietHoursStart', 'horario_silencio_inicio'], null) as string | null,
+    quiet_hours_end: pick(data, ['quiet_hours_end', 'quietHoursEnd', 'horario_silencio_fim'], null) as string | null,
+    timezone: String(pick(data, ['timezone', 'fuso_horario', 'fusoHorario'], Intl.DateTimeFormat().resolvedOptions().timeZone)),
+    daily_limit: toNumber(pick(data, ['daily_limit', 'dailyLimit', 'limite_diario', 'limiteDiario'], 10)),
+  }
+}
+
+// Installments / Parcelas
+
+export function mapInstallment(raw: unknown): Installment {
+  const data = asRecord(raw)
+  return {
+    id: String(pick(data, ['id'], '')),
+    description: String(pick(data, ['description', 'descricao', 'nome'], '')),
+    category: pick(data, ['category', 'categoria', 'categoria_nome', 'categoryName'], null) as string | null,
+    total_amount: pick(data, ['total_amount', 'totalAmount', 'valor_total', 'valorTotal'], 0),
+    installment_count: toNumber(pick(data, ['installment_count', 'installmentCount', 'total_parcelas', 'totalParcelas', 'numero_parcelas'], 0)),
+    installment_amount: pick(data, ['installment_amount', 'installmentAmount', 'valor_parcela', 'valorParcela'], 0),
+    paid_installments: toNumber(pick(data, ['paid_installments', 'paidInstallments', 'parcelas_pagas', 'parcelasPagas'], 0)),
+    remaining_installments: toNumber(pick(data, ['remaining_installments', 'remainingInstallments', 'parcelas_restantes', 'parcelasRestantes'], 0)),
+    progress_percent: toNumber(pick(data, ['progress_percent', 'progressPercent', 'percentual_progresso', 'percentualProgresso'], 0)),
+    paid_amount: pick(data, ['paid_amount', 'paidAmount', 'valor_pago', 'valorPago'], 0),
+    remaining_amount: pick(data, ['remaining_amount', 'remainingAmount', 'valor_restante', 'valorRestante'], 0),
+    next_due_date: pick(data, ['next_due_date', 'nextDueDate', 'proxima_parcela_data', 'proximaParcelaData', 'proxima_data_vencimento'], null) as string | null,
+    is_completed: Boolean(pick(data, ['is_completed', 'isCompleted', 'concluida', 'concluido'], false)),
+  }
+}
+
+export function mapInstallments(raw: unknown): Installment[] {
+  return unwrapList(raw).map(mapInstallment)
 }

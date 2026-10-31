@@ -2,12 +2,17 @@ import { Outlet } from 'react-router-dom'
 
 import { Sidebar } from '@/components/layout/Sidebar'
 import { WebHeader } from '@/components/layout/WebHeader'
+import { NotificationPanel } from '@/features/notifications/NotificationPanel'
+import { useNotificationStore } from '@/store/notificationStore'
 
 interface WebLayoutProps {
   children?: React.ReactNode
 }
 
 export function WebLayout({ children }: WebLayoutProps) {
+  const isPanelOpen = useNotificationStore((state) => state.isPanelOpen)
+  const closePanel = useNotificationStore((state) => state.closePanel)
+
   return (
     <div className="flex min-h-screen bg-background">
       {/* Fixed Desktop Sidebar */}
@@ -22,6 +27,11 @@ export function WebLayout({ children }: WebLayoutProps) {
           </div>
         </main>
       </div>
+
+      <NotificationPanel
+        isOpen={isPanelOpen}
+        onClose={closePanel}
+      />
     </div>
   )
 }

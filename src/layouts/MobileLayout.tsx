@@ -4,6 +4,8 @@ import { BottomNav } from '@/components/layout/BottomNav'
 import { LayoutSwitcher } from '@/components/layout/LayoutSwitcher'
 import { useLayout } from '@/hooks/useLayout'
 import { cn } from '@/lib/utils'
+import { NotificationPanel } from '@/features/notifications/NotificationPanel'
+import { useNotificationStore } from '@/store/notificationStore'
 
 interface MobileLayoutProps {
   children?: React.ReactNode
@@ -12,6 +14,8 @@ interface MobileLayoutProps {
 export function MobileLayout({ children }: MobileLayoutProps) {
   const { isDesktop, mode } = useLayout()
   const isForcedMobileOnDesktop = isDesktop && mode === 'mobile'
+  const isPanelOpen = useNotificationStore((state) => state.isPanelOpen)
+  const closePanel = useNotificationStore((state) => state.closePanel)
 
   return (
     <div
@@ -40,6 +44,11 @@ export function MobileLayout({ children }: MobileLayoutProps) {
 
         <BottomNav />
       </div>
+
+      <NotificationPanel
+        isOpen={isPanelOpen}
+        onClose={closePanel}
+      />
     </div>
   )
 }

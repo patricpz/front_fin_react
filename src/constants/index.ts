@@ -13,7 +13,9 @@ export const ROUTES = {
   BUDGET: '/orcamento',
   GOALS: '/metas',
   REPORTS: '/relatorios',
+  INSTALLMENTS: '/parcelas',
   PROFILE: '/perfil',
+  NOTIFICATION_PREFERENCES: '/preferencias/notificacoes',
 } as const
 
 export const DEFAULT_CATEGORIES: Category[] = [

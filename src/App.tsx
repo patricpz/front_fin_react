@@ -3,6 +3,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { Toaster } from 'sonner'
 
 import { AppRoutes } from '@/routes'
+import { IosInstallBanner } from '@/features/push/IosInstallBanner'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,6 +20,7 @@ export function App() {
       <BrowserRouter>
         <AppRoutes />
         <Toaster position="top-center" richColors closeButton />
+        <IosInstallBanner onDismiss={() => {}} />
       </BrowserRouter>
     </QueryClientProvider>
   )

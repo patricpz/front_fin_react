@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom'
 
 import { Header } from '@/components/layout/Header'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ROUTES } from '@/constants'
 import { useLogout } from '@/hooks/useAuth'
 import { useAuthStore } from '@/store/authStore'
+import { NotificationPreferences } from '@/features/notifications/NotificationPreferences'
+import { ActivateAlertsButton } from '@/features/push/ActivateAlertsButton'
 
 export function ProfilePage() {
   const user = useAuthStore((state) => state.user)
@@ -52,6 +54,24 @@ export function ProfilePage() {
                 <p className="font-medium text-sm text-emerald-600 mt-0.5">Ativa</p>
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-md">
+          <CardHeader>
+            <CardTitle className="text-base">Notificações Push</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ActivateAlertsButton />
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-md">
+          <CardHeader>
+            <CardTitle className="text-base">Preferências de Notificação</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <NotificationPreferences />
           </CardContent>
         </Card>
 
